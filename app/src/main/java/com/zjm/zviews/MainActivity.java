@@ -43,10 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cacheSplash(View view) {
-        SplashModel splashModel = new SplashModel();
-        splashModel.imgUrl = "http://5b0988e595225.cdn.sohucs.com/images/20180312/7239efc4c9cf46e68a144748f8010af6.jpeg";
-        splashModel.target = "111";
-        splashModel.event = "222";
+        SplashModel splashModel = new SplashModel("http://5b0988e595225.cdn.sohucs.com/images/20180312/7239efc4c9cf46e68a144748f8010af6.jpeg","1111","2322");
         SplashFrame.cacheData(this, splashModel);
     }
 }

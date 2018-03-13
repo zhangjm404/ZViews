@@ -36,8 +36,8 @@ public class CountDownTextView extends AppCompatTextView {
     private void initView() {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.TOP | Gravity.RIGHT;
-        layoutParams.rightMargin = UiUtils.dp2px(getContext(),16);
-        layoutParams.topMargin = UiUtils.dp2px(getContext(),16);
+        layoutParams.rightMargin = UiUtils.dp2px(getContext(), 16);
+        layoutParams.topMargin = UiUtils.dp2px(getContext(), 16);
         setText("跳过");
         setLayoutParams(layoutParams);
         setBackgroundResource(R.drawable.splash_skip_bg);
@@ -54,11 +54,11 @@ public class CountDownTextView extends AppCompatTextView {
     public void startCountDown(final int time) {
         Observable
                 .interval(0, 1, TimeUnit.SECONDS)
-                .take(time)
+                .take(time + 1)
                 .map(new Function<Long, Long>() {
                     @Override
                     public Long apply(Long aLong) throws Exception {
-                        return time + 1 - aLong;
+                        return time - aLong;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -71,7 +71,7 @@ public class CountDownTextView extends AppCompatTextView {
 
                     @Override
                     public void onNext(@NonNull Long downTime) {
-                        setText(String.format("跳过(%d)", downTime - 1));
+                        setText(String.format("跳过(%d)", downTime));
                     }
 
                     @Override

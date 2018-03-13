@@ -40,7 +40,7 @@ public class SplashFrame extends FrameLayout {
     private Activity mContext;
     private OnSplashActionListener mActionListener;
     private boolean isActionBarShowing = true;
-    private final static int COUNT_DOWN_TIME = 10;
+    private static int COUNT_DOWN_TIME = 3;
     private int mIvBottomRes;
     private static final String SP_NAME = "splash";
     private static final String SP_KEY = "SplashModel";
@@ -52,6 +52,33 @@ public class SplashFrame extends FrameLayout {
         mIvBottomRes = bottomImgRes;
         mActionListener = listener;
         initView();
+    }
+
+    public static void show(Activity activity) {
+        show(activity, null);
+    }
+
+    public static void show(Activity activity, OnSplashActionListener listener) {
+        show(activity, -1, listener);
+    }
+
+    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener) {
+        show(activity,bottomImgRes,listener,COUNT_DOWN_TIME);
+    }
+
+    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener,int downCountTime){
+        COUNT_DOWN_TIME = downCountTime;
+
+        ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        if (null == contentView || 0 == contentView.getChildCount()) {
+            throw new IllegalStateException("请在 Activity 的 setContentView(）方法后调用");
+        }
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        final SplashFrame splashFrame = new SplashFrame(activity, bottomImgRes,listener);
+        splashFrame.showHideActionBar(false);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        contentView.addView(splashFrame, layoutParams);
     }
 
     private void initView() {
@@ -102,7 +129,7 @@ public class SplashFrame extends FrameLayout {
         ivTop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,"1111111",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"1111111",Toast.LENGTH_SHORT).show();
                 if (mActionListener != null) {
                     mActionListener.onImageClick(model.event, model.target);
                 }
@@ -117,27 +144,6 @@ public class SplashFrame extends FrameLayout {
             File file = new File(filePath);
             return file.exists() && file.isFile();
         }
-    }
-
-    public static void show(Activity activity) {
-        show(activity, null);
-    }
-
-    public static void show(Activity activity, OnSplashActionListener listener) {
-        show(activity, -1, listener);
-    }
-
-    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener) {
-        ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        if (null == contentView || 0 == contentView.getChildCount()) {
-            throw new IllegalStateException("请在 Activity 的 setContentView(）方法后调用");
-        }
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        final SplashFrame splashFrame = new SplashFrame(activity, bottomImgRes,listener);
-        splashFrame.showHideActionBar(false);
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        contentView.addView(splashFrame, layoutParams);
     }
 
     public static void cacheData(final Context context, final SplashModel model) {

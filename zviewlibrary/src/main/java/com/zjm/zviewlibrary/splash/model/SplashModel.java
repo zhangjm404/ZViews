@@ -16,6 +16,12 @@ public class SplashModel {
     public String target = "";
     public String imgPath = "";
 
+    public SplashModel(String imgUrl, String event, String target) {
+        this.imgUrl = imgUrl;
+        this.event = event;
+        this.target = target;
+    }
+
     public static SplashModel fromJson(@Nullable String json) {
         if (json == null || json.isEmpty()) {
             return null;
