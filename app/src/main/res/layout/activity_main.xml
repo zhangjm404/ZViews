@@ -23,4 +23,11 @@
         android:onClick="goSplash2"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="缓存闪屏数据"
+        android:onClick="cacheSplash"
+        />
+
 </LinearLayout>
