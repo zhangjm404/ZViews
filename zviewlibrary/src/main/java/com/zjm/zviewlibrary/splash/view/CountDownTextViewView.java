@@ -1,8 +1,8 @@
 package com.zjm.zviewlibrary.splash.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -24,11 +24,9 @@ import io.reactivex.functions.Function;
  * <p>
  * Created by zjm on 2018/3/12.
  */
-public class CountDownTextView extends AppCompatTextView {
+public class CountDownTextViewView extends BaseSkipTextView {
 
-    private OnCountDownListener mListener;
-
-    public CountDownTextView(Context context) {
+    public CountDownTextViewView(Context context) {
         super(context);
         initView();
     }
@@ -39,6 +37,7 @@ public class CountDownTextView extends AppCompatTextView {
         layoutParams.rightMargin = UiUtils.dp2px(getContext(), 16);
         layoutParams.topMargin = UiUtils.dp2px(getContext(), 16);
         setText("跳过");
+        setTextColor(Color.parseColor("#ccffffff"));
         setLayoutParams(layoutParams);
         setBackgroundResource(R.drawable.splash_skip_bg);
         setOnClickListener(new OnClickListener() {
@@ -51,6 +50,7 @@ public class CountDownTextView extends AppCompatTextView {
         });
     }
 
+    @Override
     public void startCountDown(final int time) {
         Observable
                 .interval(0, 1, TimeUnit.SECONDS)
@@ -71,7 +71,7 @@ public class CountDownTextView extends AppCompatTextView {
 
                     @Override
                     public void onNext(@NonNull Long downTime) {
-                        setText(String.format("跳过(%d)", downTime));
+                        setText(String.format("%d | 跳过", downTime));
                     }
 
                     @Override
@@ -89,11 +89,4 @@ public class CountDownTextView extends AppCompatTextView {
                 });
     }
 
-    public void setListener(OnCountDownListener listener) {
-        mListener = listener;
-    }
-
-    public interface OnCountDownListener {
-        void onComplete();
-    }
 }

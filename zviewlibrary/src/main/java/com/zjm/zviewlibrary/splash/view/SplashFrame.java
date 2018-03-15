@@ -33,6 +33,14 @@ import java.io.File;
  * When I wrote this, only God and I understood what I was doing
  * Now, God only knows
  * <p>
+ * 一个简单好用的闪屏控件
+ * 有两个显示模式
+ * - 全屏幕模式：整个闪屏图片，右上角有个倒计时按钮
+ * - 上下模式：下面是一个 logo 图，上面是个闪屏图，右上角有个倒计时按钮
+ * <p>
+ * 第一次弹出显示默认图片
+ * 如果调用 cacheData 缓存数据后
+ * 显示上一次缓存的数据
  * Created by zjm on 2018/3/9.
  */
 public class SplashFrame extends FrameLayout {
@@ -46,36 +54,87 @@ public class SplashFrame extends FrameLayout {
     private static final String SP_KEY = "SplashModel";
 
 
-    public SplashFrame(@NonNull Activity context, int bottomImgRes, OnSplashActionListener listener) {
+    public SplashFrame(@NonNull Activity context, int bottomImgRes, OnSplashActionListener listener, BaseSkipTextView skipTextView) {
         super(context);
         mContext = context;
         mIvBottomRes = bottomImgRes;
         mActionListener = listener;
         initView();
+
+        skipTextView.setListener(new BaseSkipTextView.OnCountDownListener() {
+            @Override
+            public void onComplete() {
+                hideSplash();
+            }
+        });
+        skipTextView.startCountDown(COUNT_DOWN_TIME);
+        addView(skipTextView);
     }
 
+    /**
+     * 全屏幕闪屏模式弹出闪屏页
+     * 默认倒计时3秒
+     *
+     * @param activity
+     */
     public static void show(Activity activity) {
         show(activity, null);
     }
 
+    /**
+     * 全屏幕闪屏模式弹出闪屏页
+     * 默认倒计时3秒
+     *
+     * @param activity
+     * @param listener 闪屏页监听器
+     */
     public static void show(Activity activity, OnSplashActionListener listener) {
         show(activity, -1, listener);
     }
 
+    /**
+     * 弹出闪屏页
+     * 默认倒计时3秒
+     *
+     * @param activity
+     * @param bottomImgRes 下面的 logo 图res 资源；如果传入-1则使用全屏幕闪屏默认
+     * @param listener     闪屏页监听器
+     */
     public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener) {
-        show(activity,bottomImgRes,listener,COUNT_DOWN_TIME);
+        show(activity, bottomImgRes, listener, COUNT_DOWN_TIME);
     }
 
-    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener,int downCountTime){
-        COUNT_DOWN_TIME = downCountTime;
+    /**
+     * 弹出闪屏页
+     *
+     * @param activity
+     * @param bottomImgRes  下面的 logo 图res 资源；如果传入-1则使用全屏幕闪屏默认
+     * @param listener      闪屏页监听器
+     * @param downCountTime 倒计时时长，单位：秒
+     */
+    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener, int downCountTime) {
+        show(activity, bottomImgRes, listener, downCountTime, new CountDownTextViewView(activity));
+    }
 
+    /**
+     * 弹出闪屏页
+     *
+     * @param activity
+     * @param bottomImgRes  下面的 logo 图res 资源；如果传入-1则使用全屏幕闪屏默认
+     * @param listener      闪屏页监听器
+     * @param downCountTime 倒计时时长，单位：秒
+     * @param skipTextView  自定义倒计时按钮，继承BaseSkipTextView即可
+     */
+    public static void show(Activity activity, int bottomImgRes, OnSplashActionListener listener, int downCountTime, BaseSkipTextView skipTextView) {
+
+        COUNT_DOWN_TIME = downCountTime;
         ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         if (null == contentView || 0 == contentView.getChildCount()) {
             throw new IllegalStateException("请在 Activity 的 setContentView(）方法后调用");
         }
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        final SplashFrame splashFrame = new SplashFrame(activity, bottomImgRes,listener);
+        final SplashFrame splashFrame = new SplashFrame(activity, bottomImgRes, listener, skipTextView);
         splashFrame.showHideActionBar(false);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         contentView.addView(splashFrame, layoutParams);
@@ -104,16 +163,6 @@ public class SplashFrame extends FrameLayout {
             LinearLayout.LayoutParams ivBottomParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UiUtils.dp2px(mContext, 130));
             layoutBg.addView(ivBottom, ivBottomParams);
         }
-
-        CountDownTextView countDownTextView = new CountDownTextView(mContext);
-        countDownTextView.setListener(new CountDownTextView.OnCountDownListener() {
-            @Override
-            public void onComplete() {
-                hideSplash();
-            }
-        });
-        countDownTextView.startCountDown(COUNT_DOWN_TIME);
-        addView(countDownTextView);
     }
 
     private void setIvTopData(ImageView ivTop) {
@@ -151,21 +200,18 @@ public class SplashFrame extends FrameLayout {
             throw new IllegalStateException("你丫传个 null 进来干吗");
         }
         final SharedPreferences splashSP = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        //TODO 判断是否已缓存
         String json = splashSP.getString(SP_KEY, "");
         SplashModel lastModel = SplashModel.fromJson(json);
         if (isDataExist(lastModel, model)) {
             return;
         }
 
-        //TODO 下载图片
         ImgDonwloadUtils.donwloadImg(context, model.imgUrl, "闪屏", new ImgDonwloadUtils.OnDownloadListener() {
             @Override
             public void onSucceed(String path) {
                 Toast.makeText(context, "下载成功" + path, Toast.LENGTH_SHORT).show();
                 model.imgPath = path;
                 splashSP.edit().putString(SP_KEY, new Gson().toJson(model)).commit();
-                //TODO 保存事件到 sp
             }
         });
     }
@@ -257,9 +303,21 @@ public class SplashFrame extends FrameLayout {
     }
 
 
+    /**
+     * 事件监听
+     */
     public interface OnSplashActionListener {
+        /**
+         * 广告被点击了
+         *
+         * @param event
+         * @param target
+         */
         void onImageClick(String event, String target);
 
+        /**
+         * 闪屏页关闭
+         */
         void onHide();
     }
 
