@@ -10,7 +10,7 @@
 - 支持自定义倒计时按钮
 - 支持点击事件；
 ### 效果图
-![img](https://im4.ezgif.com/tmp/ezgif-4-d9c08b3e6c.gif)
+![img](./img/splashFrame.gif)
 ### 使用方法
 ```java
 //TODO 弹出闪屏
