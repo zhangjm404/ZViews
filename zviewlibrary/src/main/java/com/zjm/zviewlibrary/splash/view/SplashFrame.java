@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zjm.zviewlibrary.R;
@@ -178,7 +177,6 @@ public class SplashFrame extends FrameLayout {
         ivTop.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(mContext,"1111111",Toast.LENGTH_SHORT).show();
                 if (mActionListener != null) {
                     mActionListener.onImageClick(model.event, model.target);
                 }
@@ -209,7 +207,6 @@ public class SplashFrame extends FrameLayout {
         ImgDonwloadUtils.donwloadImg(context, model.imgUrl, "闪屏", new ImgDonwloadUtils.OnDownloadListener() {
             @Override
             public void onSucceed(String path) {
-                Toast.makeText(context, "下载成功" + path, Toast.LENGTH_SHORT).show();
                 model.imgPath = path;
                 splashSP.edit().putString(SP_KEY, new Gson().toJson(model)).commit();
             }
