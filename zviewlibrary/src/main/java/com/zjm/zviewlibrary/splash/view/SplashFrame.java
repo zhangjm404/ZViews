@@ -149,7 +149,7 @@ public class SplashFrame extends FrameLayout {
 
         ImageView ivTop = new ImageView(mContext);
         ivTop.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ivTop.setImageResource(R.drawable.default_image);
+        ivTop.setImageResource(R.drawable.bg_splash_default_image);
         LinearLayout.LayoutParams ivTopParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         ivTopParams.weight = 1;
         layoutBg.addView(ivTop, ivTopParams);

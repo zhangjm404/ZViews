@@ -20,7 +20,7 @@ public abstract class BaseSkipTextView extends AppCompatTextView {
     /**
      * @param time 开始倒计时
      */
-    abstract void startCountDown(int time);
+    public abstract void startCountDown(int time);
 
     public void setListener(OnCountDownListener listener) {
         mListener = listener;
