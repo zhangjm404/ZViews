@@ -56,7 +56,7 @@ public class NestedRecycleryView extends RecyclerView {
                     getParent().requestDisallowInterceptTouchEvent(true);
                 } else {
                     mCurrentY = e.getY();
-                    boolean boundary = isBoundary(e.getY());
+                    boolean boundary = isBoundary();
                     getParent().requestDisallowInterceptTouchEvent(!boundary);
                 }
                 mLastY = mCurrentY;
@@ -71,10 +71,9 @@ public class NestedRecycleryView extends RecyclerView {
     }
 
     /**
-     * @param y
      * @return 是否滑动到边界
      */
-    private boolean isBoundary(float y) {
+    private boolean isBoundary() {
         LayoutManager layoutManager = getLayoutManager();
 
         int lastCompletelyVisibleItemPosition;
