@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         SplashFrame.cacheData(this, splashModel);
     }
 
+    public void clearCache(View view) {
+        SplashFrame.cacheData(this,null);
+    }
+
     public void goRecycleryview(View view) {
         startActivity(new Intent(this, NestedRecycleryActivity.class));
     }

@@ -33,6 +33,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="清理缓存数据"
+        android:onClick="clearCache"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="嵌套滚动的 Recycleryview"
         android:onClick="goRecycleryview"
         />

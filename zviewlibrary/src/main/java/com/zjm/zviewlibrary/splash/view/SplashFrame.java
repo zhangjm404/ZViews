@@ -48,6 +48,7 @@ public class SplashFrame extends FrameLayout {
     private OnSplashActionListener mActionListener;
     private boolean isActionBarShowing = true;
     private static int COUNT_DOWN_TIME = 3;
+    private static int SPLASH_TIME = 1;
     private int mIvBottomRes;
     private static final String SP_NAME = "splash";
     private static final String SP_KEY = "SplashModel";
@@ -60,6 +61,24 @@ public class SplashFrame extends FrameLayout {
         mActionListener = listener;
         initView();
 
+        if (getCacheData() == null) {
+            setStartUpModel(skipTextView);
+        } else {
+            addSkipText(skipTextView);
+        }
+    }
+
+    private void setStartUpModel(BaseSkipTextView skipTextView) {
+        skipTextView.setListener(new BaseSkipTextView.OnCountDownListener() {
+            @Override
+            public void onComplete() {
+                hideSplash();
+            }
+        });
+        skipTextView.startCountDown(SPLASH_TIME);
+    }
+
+    private void addSkipText(BaseSkipTextView skipTextView) {
         skipTextView.setListener(new BaseSkipTextView.OnCountDownListener() {
             @Override
             public void onComplete() {
@@ -165,9 +184,7 @@ public class SplashFrame extends FrameLayout {
     }
 
     private void setIvTopData(ImageView ivTop) {
-        SharedPreferences splashSP = mContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
-        String json = splashSP.getString(SP_KEY, "");
-        final SplashModel model = SplashModel.fromJson(json);
+        final SplashModel model = getCacheData();
         if (model == null) {
             return;
         }
@@ -184,6 +201,13 @@ public class SplashFrame extends FrameLayout {
         });
     }
 
+    private SplashModel getCacheData() {
+        SharedPreferences splashSP = mContext.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        String json = splashSP.getString(SP_KEY, "");
+        final SplashModel model = SplashModel.fromJson(json);
+        return model;
+    }
+
     public static boolean isFileExist(String filePath) {
         if (TextUtils.isEmpty(filePath)) {
             return false;
@@ -194,10 +218,11 @@ public class SplashFrame extends FrameLayout {
     }
 
     public static void cacheData(final Context context, final SplashModel model) {
-        if (model == null) {
-            throw new IllegalStateException("你丫传个 null 进来干吗");
-        }
         final SharedPreferences splashSP = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        if (model == null) {
+            splashSP.edit().clear().apply();
+            return;
+        }
         String json = splashSP.getString(SP_KEY, "");
         SplashModel lastModel = SplashModel.fromJson(json);
         if (isDataExist(lastModel, model)) {
